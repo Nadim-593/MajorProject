@@ -55,13 +55,18 @@ app.get("/listings/:id", async (req, res) => {
   const listing = await Listing.findById(id);
   res.render("listings/show.ejs", { listing });
 });
+
 //cretae route
-app.post("/listings", async (req, res) =>{
-  // let {title , descriptiption, imaeg, price, country , location} = req.body;
+app.post("/listings", async (req, res, next) =>{
+  try{
+      // let {title , descriptiption, imaeg, price, country , location} = req.body;
   let newListing = new Listing (req.body.listing);
   await newListing.save()
   res.redirect("/listings")
   
+  } catch(err){
+    next(err)
+  }
 })
 
 //Edit Rout
@@ -97,6 +102,11 @@ app.delete("/listings/:id", async(req, res)=>{
 //   res.send("Successful testing");
   
 // })
+
+// error handdaling middleware 
+app.use((err,req,res,next)=>{
+  res.send("something went wrong !")
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
