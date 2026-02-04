@@ -7,6 +7,7 @@ const Listing = require("./models/listing.js");
 const { title } = require('process');
 const methodOverride = require('method-override');
  const ejsMate = require('ejs-mate');
+ 
 // Specify the directory where your EJS template files are located
 // Using path.join(__dirname, 'views') is recommended for robust path resolution
 app.set('view engine', 'ejs'); 
