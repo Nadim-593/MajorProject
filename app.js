@@ -8,7 +8,8 @@ const { title } = require('process');
 const methodOverride = require('method-override');
  const ejsMate = require('ejs-mate');
  const ExpressError = require ("./Utlis/ExpressError.js")
- 
+ const {ListingSchema} = require("./Schema.js")
+
 // Specify the directory where your EJS template files are located
 // Using path.join(__dirname, 'views') is recommended for robust path resolution
 app.set('view engine', 'ejs'); 
@@ -34,12 +35,26 @@ async function main() {                           //   ^
 }
 
 
+
+
+const validateListing = ((req, res, next) =>{
+       let {error} = ListingSchema.validate(req.body)
+
+   if(error){
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errMsg);
+   } else {
+    next();
+   }
+})
+
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
 //index Route 
-app.get("/listings", async(req , res, next) => {
+app.get("/listings",  async(req , res, next) => {
   try {
       const allListing = await Listing.find({});
   res.render("listings/index.ejs",{allListing})
@@ -68,11 +83,9 @@ app.get("/listings/:id", async (req, res, next) => {
 });
 
 //cretae route
-app.post("/listings", async (req, res, next) =>{
+app.post("/listings",validateListing ( async (req, res, next) =>{
   try{
-    if(!req.body.listing){
-      throw new ExpressError(400, "send valid data")
-    }
+
       // let {title , descriptiption, imaeg, price, country , location} = req.body;
   let newListing = new Listing (req.body.listing);
   await newListing.save()
@@ -81,7 +94,7 @@ app.post("/listings", async (req, res, next) =>{
   } catch(err){
     next(err)
   }
-})
+})) ;
 
 //Edit Rout
 app.get("/listings/:id/edit", async (req , res,next) =>{
@@ -96,11 +109,9 @@ app.get("/listings/:id/edit", async (req , res,next) =>{
 })
 
 //update 
-app.put("/listings/:id" , async (req, res,next) =>{
+app.put("/listings/:id" , validateListing( async (req, res,next) =>{
   try{
-     if(!req.body.listing){
-      throw new ExpressError(400, "send valid data")
-    }
+     
         let{id} = req.params;
  await Listing.findByIdAndUpdate(id, {...req.body.listing})
  res.redirect("/listings")
@@ -108,7 +119,7 @@ app.put("/listings/:id" , async (req, res,next) =>{
     next(err);
   }
 
-})
+}))
 // Delete 
 app.delete("/listings/:id", async(req, res,next)=>{
   try{
@@ -143,7 +154,8 @@ app.use((req, res, next) => {
 // error handdaling middleware 
 app.use((err,req,res,next)=>{
   let {StatusCode = 500 , message =" Something went wrong" } = err;
-  res.status(StatusCode).send(message);
+  // res.status(StatusCode).send(message);
+  res.render("Error.ejs",{message})
 })
 
 app.listen(port, () => {
