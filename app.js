@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 })
 
 //index Route 
-app.get("/listings", async(req , res) => {
+app.get("/listings", async(req , res, next) => {
   try {
       const allListing = await Listing.find({});
   res.render("listings/index.ejs",{allListing})
@@ -56,7 +56,7 @@ app.get("/listings/new", (req, res) => {
 });
 
 //Show Route
-app.get("/listings/:id", async (req, res) => {
+app.get("/listings/:id", async (req, res, next) => {
   try{
       let { id } = req.params;
   const listing = await Listing.findById(id);
@@ -81,7 +81,7 @@ app.post("/listings", async (req, res, next) =>{
 })
 
 //Edit Rout
-app.get("/listings/:id/edit", async (req , res) =>{
+app.get("/listings/:id/edit", async (req , res,next) =>{
   try{
         let{id} = req.params;
   const listing = await Listing.findById(id);
@@ -93,7 +93,7 @@ app.get("/listings/:id/edit", async (req , res) =>{
 })
 
 //update 
-app.put("/listings/:id" , async (req, res) =>{
+app.put("/listings/:id" , async (req, res,next) =>{
   try{
         let{id} = req.params;
  await Listing.findByIdAndUpdate(id, {...req.body.listing})
@@ -104,14 +104,14 @@ app.put("/listings/:id" , async (req, res) =>{
 
 })
 // Delete 
-app.delete("/listings/:id", async(req, res)=>{
+app.delete("/listings/:id", async(req, res,next)=>{
   try{
        let{id} = req.params;
   let deleteListing = await  Listing.findByIdAndDelete(id);
   console.log(deleteListing);
   res.redirect("/listings")
   }catch(err){
-    next(err)
+    next(err);
   }
 
 })
@@ -129,13 +129,14 @@ app.delete("/listings/:id", async(req, res)=>{
   
 // })
 
-app.all("*",(req,res,next)=>{
-  next(new ExpressError (404, "page not Found !"));
-})
+app.use((req, res, next) => {
+  next(new ExpressError(404, "Page not found!"));
+});
+
 
 // error handdaling middleware 
 app.use((err,req,res,next)=>{
-  let {StatusCode, message} = err;
+  let {StatusCode = 500 , message =" Something went wrong" } = err;
   res.status(StatusCode).send(message);
 })
 
