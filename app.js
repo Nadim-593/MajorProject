@@ -7,6 +7,7 @@ const Listing = require("./models/listing.js");
 const { title } = require('process');
 const methodOverride = require('method-override');
  const ejsMate = require('ejs-mate');
+ const ExpressError = require ("./Utlis/ExpressError.js")
  
 // Specify the directory where your EJS template files are located
 // Using path.join(__dirname, 'views') is recommended for robust path resolution
@@ -105,6 +106,7 @@ app.delete("/listings/:id", async(req, res)=>{
 
 // error handdaling middleware 
 app.use((err,req,res,next)=>{
+  let {StatusCode, message} = err;
   res.send("something went wrong !")
 })
 
