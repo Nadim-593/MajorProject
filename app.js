@@ -70,6 +70,9 @@ app.get("/listings/:id", async (req, res, next) => {
 //cretae route
 app.post("/listings", async (req, res, next) =>{
   try{
+    if(!req.body.listing){
+      throw new ExpressError(400, "send valid data")
+    }
       // let {title , descriptiption, imaeg, price, country , location} = req.body;
   let newListing = new Listing (req.body.listing);
   await newListing.save()
@@ -95,6 +98,9 @@ app.get("/listings/:id/edit", async (req , res,next) =>{
 //update 
 app.put("/listings/:id" , async (req, res,next) =>{
   try{
+     if(!req.body.listing){
+      throw new ExpressError(400, "send valid data")
+    }
         let{id} = req.params;
  await Listing.findByIdAndUpdate(id, {...req.body.listing})
  res.redirect("/listings")
