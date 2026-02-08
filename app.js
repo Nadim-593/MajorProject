@@ -83,18 +83,34 @@ app.get("/listings/:id", async (req, res, next) => {
 });
 
 //cretae route
-app.post("/listings",validateListing ( async (req, res, next) =>{
-  try{
+// app.post("/listings",
+//   validateListing
+//    ( async (req, res, next) =>{
+//   try{
 
-      // let {title , descriptiption, imaeg, price, country , location} = req.body;
-  let newListing = new Listing (req.body.listing);
-  await newListing.save()
-  res.redirect("/listings")
+//       // let {title , descriptiption, imaeg, price, country , location} = req.body;
+//   let newListing = new Listing (req.body.listing);
+//   await newListing.save()
+//   res.redirect("/listings")
   
-  } catch(err){
-    next(err)
+//   } catch(err){
+//     next(err)
+//   }
+// })) ;
+app.post(
+  "/listings",
+  validateListing,
+  async (req, res, next) => {
+    try {
+      let newListing = new Listing(req.body.listing);
+      await newListing.save();
+      res.redirect("/listings");
+    } catch (err) {
+      next(err);
+    }
   }
-})) ;
+);
+
 
 //Edit Rout
 app.get("/listings/:id/edit", async (req , res,next) =>{
@@ -109,17 +125,31 @@ app.get("/listings/:id/edit", async (req , res,next) =>{
 })
 
 //update 
-app.put("/listings/:id" , validateListing( async (req, res,next) =>{
-  try{
+// app.put("/listings/:id" , validateListing( async (req, res,next) =>{
+//   try{
      
-        let{id} = req.params;
- await Listing.findByIdAndUpdate(id, {...req.body.listing})
- res.redirect("/listings")
-  }catch(err){
-    next(err);
-  }
+//         let{id} = req.params;
+//  await Listing.findByIdAndUpdate(id, {...req.body.listing})
+//  res.redirect("/listings")
+//   }catch(err){
+//     next(err);
+//   }
 
-}))
+// }))
+app.put(
+  "/listings/:id",
+  validateListing,
+  async (req, res, next) => {
+    try {
+      let { id } = req.params;
+      await Listing.findByIdAndUpdate(id, req.body.listing);
+      res.redirect("/listings");
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 // Delete 
 app.delete("/listings/:id", async(req, res,next)=>{
   try{
