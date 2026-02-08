@@ -24,6 +24,7 @@
 // const Listing = mongoose.model("Listing", listingSchema);
 // module.exports = Listing;
 const mongoose = require("mongoose");
+const reviews = require("./reviews");
 const Schema = mongoose.Schema;
 
 const listingSchema = new Schema({
@@ -52,6 +53,10 @@ const listingSchema = new Schema({
   price: Number,
   location: String,
   country: String,
+  reviews : [{
+    type : Schema.Types.ObjectId,
+    
+}]
 });
 
 const Listing = mongoose.model("Listing", listingSchema);
