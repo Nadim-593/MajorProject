@@ -9,6 +9,7 @@ const methodOverride = require('method-override');
  const ejsMate = require('ejs-mate');
  const ExpressError = require ("./Utlis/ExpressError.js")
  const {ListingSchema} = require("./Schema.js")
+ const Review = require("./models/reviews.js")
 
 // Specify the directory where your EJS template files are located
 // Using path.join(__dirname, 'views') is recommended for robust path resolution
@@ -175,6 +176,17 @@ app.delete("/listings/:id", async(req, res,next)=>{
 //   res.send("Successful testing");
   
 // })
+
+// Review(POST) Route
+
+app.post("/listings/:id/reviews", async (req,res) => {
+   let listing = await  Listing.findById(req.params.id)
+   let newReview = new Review (req.body.review)
+    await newReview.save();
+    listing.reviews.push(newReview);
+    await listing.save(); 
+    res.redirect(`/listings/${listing.id}`);
+})
 
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page not found!"));
