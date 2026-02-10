@@ -36,7 +36,12 @@
 
     <div class="col-8 offset-3">
       <h4>Leave a Review</h4>
-      <form action="/listings/<%= listing._id %>/reviews" method="Post">
+      <form
+        action="/listings/<%= listing._id %>/reviews"
+        method="Post"
+        novalidate
+        class="needs-validation"
+      >
         <div class="mb-3 mt-3">
           <label for="rating">Rating</label>
           <input
@@ -48,15 +53,29 @@
           />
         </div>
         <div class="mb-3 mt-3">
-            <label for="comment" class="form-label" >Comments</label>
-            <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required ></textarea>
+          <label for="comment" class="form-label">Comments</label>
+          <textarea
+            name="review[comment]"
+            id="comment"
+            cols="30"
+            rows="5"
+            class="form-control"
+            required
+          ></textarea>
           <div class="invalid-feedback">
             Please submit some feedback for the review.
-          </div>  
           </div>
-            <button class="btn btn-outline-dark">Submit </button>
-
+        </div>
+        <button class="btn btn-outline-dark">Submit</button>
       </form>
+      <hr>
+      <h4>All Reviews </h4>
+      <% for(review of listing.reviews) {%>
+        <li><%= review.comment %> , <%= review.rating %></li>
+        <% } %>
+      
     </div>
   </div>
 </div>
+<!-- <script src="/public/js/script.js"></script> -->
+  <!-- <script src="/js/script.js"></script> -->
