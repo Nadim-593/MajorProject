@@ -8,8 +8,9 @@ const { title } = require('process');
 const methodOverride = require('method-override');
  const ejsMate = require('ejs-mate');
  const ExpressError = require ("./Utlis/ExpressError.js")
- const {ListingSchema} = require("./Schema.js")
- const Review = require("./models/reviews.js")
+ const {ListingSchema,reviewSchema} = require("./Schema.js")
+ const Review = require("./models/reviews.js");
+const reviews = require('./models/reviews.js');
 
 // Specify the directory where your EJS template files are located
 // Using path.join(__dirname, 'views') is recommended for robust path resolution
@@ -48,10 +49,25 @@ const validateListing = ((req, res, next) =>{
     next();
    }
 })
+const validateReview = ((req, res, next) =>{
+       let {error} = reviewSchema.validate(req.body)
 
+   if(error){
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errMsg);
+   } else {
+    next();
+   }
+})
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+app.get('/', async (req, res,next ) => {
+    try {
+      const allListing = await Listing.find({});
+  res.render("listings/index.ejs",{allListing})
+  }catch(err){
+    next(err)
+  }
+ 
 })
 
 //index Route 
@@ -75,7 +91,7 @@ app.get("/listings/new", (req, res) => {
 app.get("/listings/:id", async (req, res, next) => {
   try{
       let { id } = req.params;
-  const listing = await Listing.findById(id);
+  const listing = await Listing.findById(id).populate("reviews");
   res.render("listings/show.ejs", { listing });
   } catch(err){
     next(err);
@@ -178,14 +194,20 @@ app.delete("/listings/:id", async(req, res,next)=>{
 // })
 
 // Review(POST) Route
-
-app.post("/listings/:id/reviews", async (req,res) => {
-   let listing = await  Listing.findById(req.params.id)
+app.post("/listings/:id/reviews", 
+  validateReview,
+  async (req,res) => {
+    try {
+           let listing = await  Listing.findById(req.params.id)
    let newReview = new Review (req.body.review)
     await newReview.save();
     listing.reviews.push(newReview);
     await listing.save(); 
     res.redirect(`/listings/${listing.id}`);
+    }catch(err){
+      next(err);
+    }
+
 })
 
 app.use((req, res, next) => {
