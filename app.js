@@ -196,7 +196,7 @@ app.delete("/listings/:id", async(req, res,next)=>{
 // Review(POST) Route
 app.post("/listings/:id/reviews", 
   validateReview,
-  async (req,res) => {
+  async (req,res,next) => {
     try {
            let listing = await  Listing.findById(req.params.id)
    let newReview = new Review (req.body.review)
@@ -210,8 +210,33 @@ app.post("/listings/:id/reviews",
 
 })
 
-app.use((req, res, next) => {
-  next(new ExpressError(404, "Page not found!"));
+// delete review route 
+// app.delete("/listings/:id/reviews/:reviewsId",
+  
+//   async (req, res) => {
+//   let { id, reviewID } = req.params;
+//   await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewID}})
+//   await Review.findByIdAndDelete(reviewID);
+  
+//   res.redirect(`/listings/${id}`)
+// })
+// app.use((req, res, next) => {
+//   next(new ExpressError(404, "Page not found!"));
+// });
+app.delete("/listings/:id/reviews/:reviewId", async (req, res, next) => {
+  try {
+    let { id, reviewId } = req.params;
+
+    await Listing.findByIdAndUpdate(id, {
+      $pull: { reviews: reviewId }
+    });
+
+    await Review.findByIdAndDelete(reviewId);
+
+    res.redirect(`/listings/${id}`);
+  } catch (err) {
+    next(err);
+  }
 });
 
 
