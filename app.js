@@ -4,9 +4,10 @@ const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const ExpressError = require("./Utlis/ExpressError.js");
+
 
 const listingsRouter = require("./Routes/listing.js");
+const reviewsRouter = require("./Routes/review.js"); 
 
 const app = express();
 const port = 3000;
@@ -32,6 +33,7 @@ async function main() {
 
 // routes
 app.use("/", listingsRouter);
+app.use("/", reviewsRouter);
 
 // error handler
 app.use((err, req, res, next) => {
