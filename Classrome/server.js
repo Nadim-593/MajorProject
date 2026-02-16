@@ -13,7 +13,7 @@ res.send("Hi, I am root!");
 app.use("/users", users);
 app.use("/posts", posts);
 
-app.use(cookieParser());
+app.use(cookieParser("secretCode"));
 
 // Cookies 
 app.get("/cookie", (req,res) => {
@@ -25,6 +25,17 @@ app.get("/cookie/checkName", (req,res)=>{
     let {name = "Nothing"} = req.cookies;
     res.send(`Hi ${name}`)
 })
+
+app.get("/cookie/setSigned", (req,res)=>{
+    res.cookie("role","admin", {signed: true})
+    res.send("signed cookie send!")
+})
+app.get("/cookie/verify",(req, res)=>{
+    console.log(req.signedCookies);
+    res.send()
+    
+})
+
 app.listen(3000, () => {
 console. log("server is listening to 3000");
 });
