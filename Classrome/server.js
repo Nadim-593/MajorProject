@@ -10,12 +10,13 @@ const sessionTest = require("./routes/sessionTest.js");
 const cookieParser = require("cookie-parser"); // import cookie-parser
 
 const session = require("express-session")
-
-app.use(session({
+const sessionOption = {
     secret : " keyBoard Cat",
     resave: false,
     saveUninitialized: true,
-}));
+}
+
+app.use(session(sessionOption));
 
 
 
