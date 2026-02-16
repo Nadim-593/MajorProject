@@ -1,40 +1,39 @@
 const express = require("express");
 const app = express();
 
-const cookieParser = require("cookie-parser");
+
 
 const users = require("./routes/user.js");
 const posts = require("./routes/post.js");
+const cookies = require("./routes/cookies.js");
+const sessionTest = require("./routes/sessionTest.js");
+const cookieParser = require("cookie-parser"); // import cookie-parser
+
+const session = require("express-session")
+
+app.use(session({
+    secret : " keyBoard Cat",
+    resave: false,
+    saveUninitialized: true,
+}));
+
+
+
+app.use(cookieParser("secretCode"));    //cookie-parser
+app.use("/users", users);
+app.use("/posts", posts);
+app.use("/",cookies);
+app.use("/",sessionTest)
+
+
+
 
 app.get("/", (req, res) => {
 res.send("Hi, I am root!");
 });
 
-app.use("/users", users);
-app.use("/posts", posts);
 
-app.use(cookieParser("secretCode"));
 
-// Cookies 
-app.get("/cookie", (req,res) => {
-    res.cookie("greed", "value ")
-    res.send("Hi ")
-})
-
-app.get("/cookie/checkName", (req,res)=>{
-    let {name = "Nothing"} = req.cookies;
-    res.send(`Hi ${name}`)
-})
-
-app.get("/cookie/setSigned", (req,res)=>{
-    res.cookie("role","admin", {signed: true})
-    res.send("signed cookie send!")
-})
-app.get("/cookie/verify",(req, res)=>{
-    console.log(req.signedCookies);
-    res.send()
-    
-})
 
 app.listen(3000, () => {
 console. log("server is listening to 3000");
