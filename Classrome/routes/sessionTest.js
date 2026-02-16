@@ -20,5 +20,8 @@ router.get("/session/WithoutSessionReqCount",  (req,res) => {
        }
        res.send(`you sent a request ${req.count} times! `)
 })
-
+router.get("/register",  (req,res) => {
+    let {name} = req.query;
+    res.send(name)
+})
 module.exports = router;
