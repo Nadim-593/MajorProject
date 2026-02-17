@@ -24,10 +24,12 @@ router.get("/session/WithoutSessionReqCount",  (req,res) => {
 router.get("/register",  (req,res) => {
     let {name = "anynomus"} = req.query;
     req.session.name=name;
+    req.flash("success","user Register Successful")
     // res.send(name);
     res.redirect("/hello")
 })
 router.get("/hello",(req,res)=>{
-    res.send(`my name is = ${req.session.name}`)
+    // res.send(`my name is = ${req.session.name}`)
+    res.render("page.ejs",{name : req.session.name})
 })
 module.exports = router;
