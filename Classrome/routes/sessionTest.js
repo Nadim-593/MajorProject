@@ -1,3 +1,4 @@
+const { name } = require("ejs");
 const express = require("express");
 const router = express.Router() ;
 
@@ -21,7 +22,12 @@ router.get("/session/WithoutSessionReqCount",  (req,res) => {
        res.send(`you sent a request ${req.count} times! `)
 })
 router.get("/register",  (req,res) => {
-    let {name} = req.query;
-    res.send(name)
+    let {name = "anynomus"} = req.query;
+    req.session.name=name;
+    // res.send(name);
+    res.redirect("/hello")
+})
+router.get("/hello",(req,res)=>{
+    res.send(`my name is = ${req.session.name}`)
 })
 module.exports = router;
