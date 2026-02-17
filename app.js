@@ -5,9 +5,11 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 
+const session = require("express-session")
 
 const listingsRouter = require("./Routes/listing.js");
 const reviewsRouter = require("./Routes/review.js"); 
+const { date } = require("joi");
 
 const app = express();
 const port = 3000;
@@ -35,6 +37,17 @@ async function main() {
 app.use("/", listingsRouter);
 app.use("/", reviewsRouter);
 
+const sessionOption = {
+    secret : "MySupperSceretCode",
+    resave: false,
+    saveUninitialized: true,
+    cookie:{
+      expires : Date.now() + 7*24*60*60*1000,
+      maxAge :  7*24*60*60*1000,
+      httpOnly:true,
+    },
+}
+app.use(session(sessionOption));
 // error handler
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something went wrong" } = err;
