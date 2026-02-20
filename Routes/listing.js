@@ -68,6 +68,7 @@ router.get("/listings/:id/edit", async (req, res, next) => {
 router.put("/listings/:id", validateListing, async (req, res, next) => {
   try {
     await Listing.findByIdAndUpdate(req.params.id, req.body.listing);
+    req.flash("success", "updated Listing!")
     res.redirect("/listings");
   } catch (err) {
     next(err);
