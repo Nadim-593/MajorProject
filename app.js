@@ -4,7 +4,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
-
+const flash = require("connect-flash");
 const listingsRouter = require("./Routes/listing.js");
 const reviewsRouter = require("./Routes/review.js"); 
 const { date } = require("joi");
@@ -41,6 +41,13 @@ const sessionOption = {
 };
 
 app.use(session(sessionOption));
+app.use(flash());
+
+// flash Middleware
+app.use((req,res,next)=>{
+  res.locals.success = req.flash("success");
+  next();
+})
 
 /* ======================
    Database Connection
@@ -53,6 +60,11 @@ async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
 }
 
+//Global home route 
+app.get ("/",(req,res)=>{
+  res.redirect("/listings")
+})
+
 /* ======================
    Routes (PORE)
 ====================== */
@@ -60,11 +72,8 @@ app.use("/", listingsRouter);
 app.use("/", reviewsRouter);
 
 
-//Global home route 
 
-app.get ("/",(req,res)=>{
-  res.redirect("/listings")
-})
+
 /* ======================
    Error Handler (SHOB SHESHE)
 ====================== */
