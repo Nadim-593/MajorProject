@@ -78,6 +78,7 @@ router.put("/listings/:id", validateListing, async (req, res, next) => {
 router.delete("/listings/:id", async (req, res, next) => {
   try {
     await Listing.findByIdAndDelete(req.params.id);
+     req.flash("success", "Delete Listing!")
     res.redirect("/listings");
   } catch (err) {
     next(err);
