@@ -8,7 +8,9 @@ const flash = require("connect-flash");
 const listingsRouter = require("./Routes/listing.js");
 const reviewsRouter = require("./Routes/review.js"); 
 const { date } = require("joi");
-
+const passport  = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js")
 const app = express();
 const port = 3000;
 
@@ -43,6 +45,13 @@ const sessionOption = {
 app.use(session(sessionOption));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session()); 
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+ 
 // flash Middleware
 app.use((req,res,next)=>{
   res.locals.success = req.flash("success");
@@ -64,6 +73,15 @@ async function main() {
 //Global home route 
 app.get ("/",(req,res)=>{
   res.redirect("/listings")
+})
+
+app.get("/demouser", async (req,res) => {
+  let FakeUser = new User({
+    email:"student@gmai.com",
+    username:"student"
+  })
+  let registeredUser = await User.register(FakeUser,"helloworld");
+  res.send(registeredUser);
 })
 
 /* ======================
