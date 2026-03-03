@@ -75,14 +75,27 @@ app.get ("/",(req,res)=>{
   res.redirect("/listings")
 })
 
-app.get("/demouser", async (req,res) => {
-  let FakeUser = new User({
-    email:"student@gmai.com",
-    username:"student"
-  })
-  let registeredUser = await User.register(FakeUser,"helloworld");
-  res.send(registeredUser);
-})
+// app.get("/demouser", async (req,res) => {
+//   let FakeUser = new User({
+//     email:"student@gmai.com",
+//     username:"student"
+//   })
+//   let registeredUser = await User.register(FakeUser,"helloworld");
+//   res.send(registeredUser);
+// })
+app.get("/demouser", async (req, res) => {
+  try {
+    let fakeUser = new User({
+      email: "student@gmail.com",
+      username: "student"
+    });
+
+    let registeredUser = await User.register(fakeUser, "helloworld");
+    res.send(registeredUser);
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+});
 
 /* ======================
    Routes (PORE)
