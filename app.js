@@ -7,7 +7,7 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const listingsRouter = require("./Routes/listing.js");
 const reviewsRouter = require("./Routes/review.js"); 
-const { date } = require("joi");
+const userRouter = require("./Routes/User.js")
 const passport  = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js")
@@ -102,7 +102,7 @@ app.get("/demouser", async (req, res) => {
 ====================== */
 app.use("/", listingsRouter);
 app.use("/", reviewsRouter);
-
+app.use("/",userRouter);
 
 
 
