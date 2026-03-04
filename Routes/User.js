@@ -3,21 +3,13 @@ const express = require("express");
 const router = express.Router();
 
 const user = require("../models/user.js");
+const passport = require("passport");
 
 
 router.get("/signup",(req,res)=>{
     res.render("users/signup.ejs");
 });
 
-// router.post("/signup",async (req,res) => {
-//     let {username, password} = req.body;
-//    const newUser =  new user({email, password});
-//   const registerUser =  await user.register(newUser,password);
-//   console.log(registerUser);
-//   req.flash("success","Welcome to Wanderlust!");
-//   res.redirect("/listing")
-  
-// })
 router.post("/signup", async (req, res, next) => {
   try {
     let { username, email, password } = req.body;
@@ -31,5 +23,17 @@ router.post("/signup", async (req, res, next) => {
     req.flash("error", e.message);
     res.redirect("/signup");
   }
+});
+router.get("/login",(req,res)=>{
+    res.render("users/login.ejs");
+});
+router.post("/login",
+ passport.authenticate("local", { 
+    failureRedirect: "/login", 
+    failureFlash: true
+}),
+ async (req, res, next) => {
+    req.flash("success", "Welcome back To Wanderlust!");
+    res.redirect("/listings");
 });
 module.exports = router;
