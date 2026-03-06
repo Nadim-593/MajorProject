@@ -36,4 +36,14 @@ router.post("/login",
     req.flash("success", "Welcome back To Wanderlust!");
     res.redirect("/listings");
 });
+
+router.get("/logout",(req,res , next)=>{
+  req.logOut((err)=>{   //req.logOut() passport er invild method for Logout
+    if(err){
+     return next(err);
+    }
+  req.flash("success","You are logged out!")
+  res.redirect("/listings");
+  })                                
+})
 module.exports = router;
