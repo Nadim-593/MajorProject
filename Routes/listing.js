@@ -1,7 +1,7 @@
 
 const express = require("express");
 const router = express.Router();
-
+const {IsLoggedIn} = require("../middleware.js")
 const Listing = require("../models/listing.js");
 
 const { ListingSchema, reviewSchema } = require("../Schema.js");
@@ -28,7 +28,9 @@ router.get("/listings", async (req, res, next) => {
 });
 
 // new
-router.get("/listings/new", (req, res) => {
+router.get("/listings/new",
+  IsLoggedIn,
+  (req, res) => {
   res.render("listings/new.ejs");
 });
 
@@ -47,7 +49,10 @@ router.get("/listings/:id", async (req, res, next) => {
 });
 
 // create
-router.post("/listings", validateListing, async (req, res, next) => {
+router.post("/listings",
+   IsLoggedIn,
+   validateListing, 
+   async (req, res, next) => {
   try {
     const newListing = new Listing(req.body.listing);
     await newListing.save();
@@ -59,7 +64,9 @@ router.post("/listings", validateListing, async (req, res, next) => {
 });
 
 // edit
-router.get("/listings/:id/edit", async (req, res, next) => {
+router.get("/listings/:id/edit",
+   IsLoggedIn,
+ async (req, res, next) => {
   try {
     const listing = await Listing.findById(req.params.id);
     res.render("listings/edit.ejs", { listing });
@@ -69,7 +76,10 @@ router.get("/listings/:id/edit", async (req, res, next) => {
 });
 
 // update
-router.put("/listings/:id", validateListing, async (req, res, next) => {
+router.put("/listings/:id", 
+  IsLoggedIn,
+  validateListing,
+    async (req, res, next) => {
   try {
     await Listing.findByIdAndUpdate(req.params.id, req.body.listing);
     req.flash("success", "updated Listing!")
@@ -80,7 +90,9 @@ router.put("/listings/:id", validateListing, async (req, res, next) => {
 });
 
 // delete listing
-router.delete("/listings/:id", async (req, res, next) => {
+router.delete("/listings/:id",
+   IsLoggedIn,
+    async (req, res, next) => {
   try {
     await Listing.findByIdAndDelete(req.params.id);
      req.flash("success", "Delete Listing!")
