@@ -37,12 +37,12 @@ router.get("/listings/new",
 // show
 router.get("/listings/:id", async (req, res, next) => {
   try {
-    const listing = await Listing.findById(req.params.id).populate("reviews");
+    const listing = await Listing.findById(req.params.id).populate("reviews").populate("owner");
     if(!listing){
       req.flash("error", "Listing you requested for does not exist!")
      return res.redirect("/listings")
     }
-    res.render("listings/show.ejs", { listing });
+    res.render("listings/show.ejs", { listing , currUser: req.user});
   } catch (err) {
     next(err);
   }
@@ -55,6 +55,7 @@ router.post("/listings",
    async (req, res, next) => {
   try {
     const newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;  //
     await newListing.save();
     req.flash("success", "New Listing Created!")
     res.redirect("/listings");
