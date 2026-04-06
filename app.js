@@ -14,6 +14,7 @@ const User = require("./models/user.js")
 const app = express();
 const port = 3000;
 
+mongodb+srv://hambbahambba79_db_user:<Nadim1123@#>@cluster0.vqxmkls.mongodb.net/wanderlust?appName=Cluster0
 /* ======================
    View Engine Setup
 ====================== */
