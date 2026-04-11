@@ -1,3 +1,5 @@
+// require("dotenv").config(); //for cloud atlas
+
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -71,6 +73,14 @@ main()
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
 }
+
+// const MONGO_URL =
+//   process.env.MONGO_URI || "mongodb://127.0.0.1:27017/wanderlust";
+
+// mongoose
+//   .connect(MONGO_URL)
+//   .then(() => console.log("MongoDB Connected:", MONGO_URL))
+//   .catch((err) => console.log(err));
 
 //Global home route 
 app.get ("/",(req,res)=>{
