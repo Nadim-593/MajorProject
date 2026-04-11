@@ -1,4 +1,4 @@
-// require("dotenv").config(); //for cloud atlas
+require("dotenv").config(); //for cloud atlas
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -66,14 +66,20 @@ app.use((req,res,next)=>{
 /* ======================
    Database Connection
 ====================== */
+const MONGO_URL = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/wanderlust";
+// main()
+//   .then(() => console.log("MongoDB Connected"))
+//   .catch(err => console.log(err));
 main()
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+  .then(() => console.log("MongoDB Connected to:", MONGO_URL))
+  .catch(err => console.log("MongoDB connection error:", err));
 
+// async function main() {
+//   await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
+// }
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
+  await mongoose.connect(MONGO_URL);
 }
-
 // const MONGO_URL =
 //   process.env.MONGO_URI || "mongodb://127.0.0.1:27017/wanderlust";
 
